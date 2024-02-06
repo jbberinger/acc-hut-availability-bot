@@ -1,6 +1,6 @@
-# ACC HUT Availability Bot
+# ACC Hut Availability Bot
 
-The ACC HUT Availability Bot is a Python-based tool that checks for available spots at Alpine Club of Canada (ACC) huts
+The ACC Hut Availability Bot is a Python-based tool that checks for available spots at Alpine Club of Canada (ACC) huts
 on a specific date and sends an email notification if spots are available. Popular huts often have limited availability
 and high demand. This bot aims to assist those holding their breath for cancellations.
 
