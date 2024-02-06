@@ -1,59 +1,86 @@
 # ACC HUT Availability Bot
 
-This bot checks if there are any available spots at an ACC hut on a specific day and sends an email via 
-Gmail's SMTP server if there are.
+The ACC HUT Availability Bot is a Python-based tool that checks for available spots at Alpine Club of Canada (ACC) huts
+on a specific date and sends an email notification if spots are available. Popular huts often have limited availability
+and high demand. This bot aims to assist those holding their breath for cancellations.
 
 ## Setup
 
-Create a .env file with the following variables:
+To set up the bot, create a `.env` file in the root directory with the following variables:
+
 ```
-EMAIL_PASSWORD
-SENDER_EMAIL
-RECIPIENT_EMAIL
+EMAIL_PASSWORD=your_gmail_app_password
+SENDER_EMAIL=your_email@gmail.com
+RECIPIENT_EMAIL=recipient_email@example.com
 ```
+
+Each variable serves the following purpose:
+
+- `EMAIL_PASSWORD`: The 16-character app password for your Gmail account.
+- `SENDER_EMAIL`: The email address that will send the notification.
+- `RECIPIENT_EMAIL`: The email address that will receive the notification.
 
 ## Gmail Setup
 
-In order receive an email from the bot, you will need to create a 16 character app password for your Gmail account by 
-visiting [this link](https://myaccount.google.com/apppasswords) and following the instructions. You will need to 
-have 2FA enabled on your account to do this. Add this password to your .env file as `EMAIL_PASSWORD`.
+To receive an email from the bot, create a 16-character app password for your Gmail account. This requires 2FA (
+Two-Factor Authentication) to be enabled on your account. Follow these steps:
 
-The subject and body of the email can be customized in the `send_email` function in `bot.py`.
+1. Visit [App Passwords](https://myaccount.google.com/apppasswords).
+2. Follow the instructions to generate a new app password.
+3. Add this password to your `.env` file as `EMAIL_PASSWORD`.
+
+Customize the subject and body of the email in the `send_email` function in `bot.py`.
 
 ## Usage
-It's recommended to configure a virtual environment for this project. To do so, run the following commands:
-```
-python3 -m venv venv
+
+It's recommended to use a virtual environment for this project. Run the following commands to set up:
+
+```bash
+python3.12 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-To target a specific date, set the `date_to_check` variable in the `main` function in the format `YYYY-MM-DD`.
+Set the `target_date` variable in the `if __name__ == "__main__":` section in `bot.py` to the desired date in the
+format `YYYY-MM-DD`.
 
-The bot sends logs to `hut_availabilty.log` in the root directory.
+Logs are saved to `hut_availability.log` in the root directory.
 
 ## Adding Huts to the Script
-The `huts` dictionary in `bot.py` contains the names of the huts and their respective URLs and headers. You can add or remove huts
-from this dictionary as you see fit.
 
-### Getting the hut API data you need using Chrome
+The `huts` dictionary in `bot.py` contains configurations for each hut, including names, URLs, headers, and booking
+links. Add or remove huts as needed.
 
-Using the Scott Duncan hut as an example, navigate to the hut's [ACC page](https://www.alpineclubofcanada.ca/scott-duncan-hut/)
-and click the "Booking" tab. Open the Chrome developer tools and click the "Network" tab. Click the date you want to
-check from the date picker and notice the network request that is made. It should look something like:
-```
-https://alpine-club-of-canada.checkfront.com/reserve/inventory/?inline...
-```
-Right click the request and click "Copy" -> "Copy as cURL (bash)". Paste the cURL command into a text editor and
-extract the URL and headers needed to make the request. The Scott Duncan hut comes default in bot.py but may require 
-updating due to cookie expiration.
+### Getting the Hut API Data
 
-### Running the bot with a cron
-To run the bot every 15 minutes, add the following line to your crontab file:
-```
-crontab -e
-```
+For example, to add the Scott Duncan Hut:
 
-```
-*/15 * * * * cd /path/to/acc-hut-availability-bot && /venv/bin/python3 bot.py
-```
+1. Go to the [Scott Duncan Hut ACC page](https://www.alpineclubofcanada.ca/scott-duncan-hut/) and click the "Booking"
+   tab.
+2. Open Chrome Developer Tools and select the "Network" tab.
+3. Click the desired date on the date picker and observe the network request that appears.
+4. Right-click the request and select "Copy" > "Copy as cURL (bash)".
+5. Extract the URL and headers from the copied cURL command.
+
+The default configuration for the Scott Duncan Hut is included but may need updating due to cookie expiration.
+
+## Running the Bot with Cron
+
+To run the bot every 15 minutes using cron:
+
+1. Open your crontab file with `crontab -e`.
+2. Add the following line:
+
+   ```
+   */15 * * * * cd /path/to/acc-hut-availability-bot && ./venv/bin/python3 bot.py
+   ```
+
+This will execute `bot.py` from the specified directory every 15 minutes. Ensure the path is correct for your setup.
+
+## Troubleshooting
+
+If you encounter issues, check the following:
+
+- Ensure all dependencies are installed and the virtual environment is activated.
+- Verify that the `.env` file contains the correct email credentials.
+- Check `hut_availability.log` for error messages.
